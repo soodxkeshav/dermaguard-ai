@@ -1,0 +1,25 @@
+# Environments & Virtual Envs
+.venv/
+env/
+venv/
+ENV/
+
+# Python & Jupyter Caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Large Datasets & Images (Ignore image binaries; keep CSV metadata)
+datasets/fitzpatrick17k/background removed/
+datasets/ddi/
+
+# Models & Artifacts
+models/
+
+# System & OS Files
+.DS_Store
+Thumbs.db
+*.log
