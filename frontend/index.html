@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DermaGuard AI skin lesion visualization and classification">
+    <title>DermaGuard AI | Skin Lesion Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="page-shell">
+        <section class="hero">
+            <p class="eyebrow">Clinical computer vision</p>
+            <h1>DermaGuard <span>AI</span></h1>
+            <p class="hero-copy">Review a skin image with a classification estimate and a visual map of the regions
+                influencing the model.</p>
+        </section>
+
+        <section class="upload-panel" aria-labelledby="upload-title">
+            <div>
+                <p class="section-kicker">Image assessment</p>
+                <h2 id="upload-title">Upload a lesion image</h2>
+                <p class="muted">Use a clear JPG, JPEG, or PNG image for the best result.</p>
+            </div>
+            <div class="upload-controls">
+                <label class="file-picker" for="imageInput">
+                    <span>Choose image</span>
+                    <input type="file" id="imageInput" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
+                </label>
+                <span id="fileName" class="file-name">No image selected</span>
+                <button id="analyzeButton" type="button">Analyze image</button>
+                <button id="resetButton" class="secondary-button" type="button">New analysis</button>
+            </div>
+        </section>
+
+        <p id="statusMessage" class="status-message" role="status" aria-live="polite"></p>
+
+        <section id="result" class="results" aria-live="polite" aria-busy="false" hidden>
+            <div class="result-header">
+                <div>
+                    <p class="section-kicker">Model assessment</p>
+                    <h2>Analysis results</h2>
+                </div>
+                <div class="metrics" aria-label="Prediction summary">
+                    <div class="metric">
+                        <span>Prediction</span>
+                        <strong id="predictionValue">—</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Confidence</span>
+                        <strong id="confidenceValue">—</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualization-grid">
+                <article class="visual-card">
+                    <div class="visual-card-header">
+                        <span class="visual-index">01</span>
+                        <h3>Original image</h3>
+                    </div>
+                    <div class="image-frame">
+                        <img id="originalImage" class="visual-image is-hidden" alt="Uploaded skin lesion">
+                    </div>
+                </article>
+                <article class="visual-card">
+                    <div class="visual-card-header">
+                        <span class="visual-index">02</span>
+                        <h3>Heatmap</h3>
+                    </div>
+                    <div class="image-frame">
+                        <img id="heatmapImage" class="visual-image is-hidden" alt="Grad-CAM heatmap">
+                    </div>
+                </article>
+                <article class="visual-card">
+                    <div class="visual-card-header">
+                        <span class="visual-index">03</span>
+                        <h3>Overlay</h3>
+                    </div>
+                    <div class="image-frame">
+                        <img id="overlayImage" class="visual-image is-hidden"
+                            alt="Grad-CAM overlay on the original image">
+                    </div>
+                </article>
+            </div>
+
+            <p class="gradcam-explanation">
+                <strong>Grad-CAM explanation:</strong>
+                Warm colors (red/yellow) indicate image regions that contributed most strongly to the model's
+                prediction.
+                Cooler colors (blue) contributed less.
+            </p>
+        </section>
+
+        <footer>
+            DermaGuard AI is an assistive research tool and does not provide a medical diagnosis.
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

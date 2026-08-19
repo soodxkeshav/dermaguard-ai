@@ -1,0 +1,12 @@
+.git
+.gitignore
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+tfenv/
+datasets/
+notebooks/
+reports/
+backend/uploads/
+uploads/

@@ -1,25 +1,39 @@
 # Environments & Virtual Envs
 .venv/
-env/
 venv/
+env/
 ENV/
+tfenv/
 
-# Python & Jupyter Caches
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.ipynb_checkpoints/
-.pytest_cache/
 
-# Large Datasets & Images (Ignore image binaries; keep CSV metadata)
-datasets/fitzpatrick17k/background removed/
-datasets/ddi/
+# Uploads
+uploads/
+backend/uploads/
 
-# Models & Artifacts
+# Generated Reports
+reports/gradcam_examples/
+reports/gradcam_validation/
+reports/improved_v2/
+
+# Datasets
+datasets/
+skin_dataset_split/
+
+# Models
 models/
+*.pth
+*.pt
 
-# System & OS Files
+# Logs
+*.log
+
+# OS
 .DS_Store
 Thumbs.db
-*.log
+files.txt
+structure.txt
