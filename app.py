@@ -4,6 +4,10 @@ import os
 from datetime import datetime, timezone
 
 import streamlit as st
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from model_loader import DEFAULT_MODEL_PATH, load_model
 from predict import predict_image
@@ -91,17 +95,36 @@ if uploaded_file is not None:
         if analyze:
             try:
                 with st.spinner("Analyzing image..."):
+
+                    logger.info("STEP 1: Loading model")
                     model, device = load_model(configured_model)
+
+                    logger.info("STEP 2: Running prediction")
                     predictions = predict_image(image, model, device)
+
                     heatmap_image = None
                     overlay_image = None
+
                     try:
+                        logger.info("STEP 3: Preprocessing image")
                         input_tensor = preprocess_image(image).to(device)
+
+                        logger.info("STEP 4: Starting GradCAM")
                         with GradCAM(model, model.layer4[-1]) as gradcam:
                             heatmap, _, _ = gradcam(input_tensor)
+
+                        logger.info("STEP 5: Rendering heatmap")
                         heatmap_image, overlay_image = render_gradcam(image, heatmap)
-                    except Exception:
-                        st.warning("Grad-CAM visualization unavailable.")
+
+                        logger.info("STEP 6: GradCAM complete")
+
+                    except Exception as e:
+                        logger.exception("GradCAM failed")
+                        st.warning(f"Grad-CAM visualization unavailable: {e}")
+                        heatmap_image = None
+                        overlay_image = None
+
+
                 primary = predictions[0]
                 st.session_state.prediction_history.insert(0, {
                     "time": datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M"),
