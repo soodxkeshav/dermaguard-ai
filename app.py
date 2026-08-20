@@ -114,12 +114,14 @@ if uploaded_file is not None:
                         print("BEFORE GRADCAM OBJECT", flush=True)
 
                         with GradCAM(model, model.layer4[-1]) as gradcam:
-
-                            print("GRADCAM OBJECT CREATED", flush=True)
-
                             heatmap, _, _ = gradcam(input_tensor)
 
                             print("HEATMAP GENERATED", flush=True)
+
+                            heatmap_image, overlay_image = render_gradcam(
+                                image,
+                                heatmap
+                            )
 
                         print("STEP 5: Rendering heatmap", flush=True)
 
