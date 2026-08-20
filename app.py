@@ -189,9 +189,10 @@ if uploaded_file is not None:
 
                     else:
                         explanation = (
-                            "Grad-CAM highlights the facial regions that contributed most to the Non-Neoplastic prediction. "
-                            "Red and yellow areas indicate stronger influence on the model's decision, while blue regions "
-                            "had little impact. This visualization helps users understand which image features were used "
+                            "Grad-CAM highlights the image regions that contributed most to the "
+                            "Non-Neoplastic prediction. Red and yellow areas indicate stronger "
+                            "influence on the model's decision, while blue regions had less influence. "
+                            "This visualization helps users understand which image features were used "
                             "by the AI during classification."
                         )
 
