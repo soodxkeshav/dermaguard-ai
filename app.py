@@ -96,27 +96,27 @@ if uploaded_file is not None:
             try:
                 with st.spinner("Analyzing image..."):
 
-                    logger.info("STEP 1: Loading model")
+                    print("STEP 1: Loading model", flush=True)
                     model, device = load_model(configured_model)
 
-                    logger.info("STEP 2: Running prediction")
+                    print("STEP 2: Running prediction", flush=True)
                     predictions = predict_image(image, model, device)
 
                     heatmap_image = None
                     overlay_image = None
 
                     try:
-                        logger.info("STEP 3: Preprocessing image")
+                        print("STEP 3: Preprocessing image", flush=True)
                         input_tensor = preprocess_image(image).to(device)
 
-                        logger.info("STEP 4: Starting GradCAM")
+                        print("STEP 4: Starting GradCAM", flush=True)
                         with GradCAM(model, model.layer4[-1]) as gradcam:
                             heatmap, _, _ = gradcam(input_tensor)
 
-                        logger.info("STEP 5: Rendering heatmap")
+                        print("STEP 5: Rendering heatmap", flush=True)
                         heatmap_image, overlay_image = render_gradcam(image, heatmap)
 
-                        logger.info("STEP 6: GradCAM complete")
+                        print("STEP 6: GradCAM complete", flush=True)
 
                     except Exception as e:
                         logger.exception("GradCAM failed")
