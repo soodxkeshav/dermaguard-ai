@@ -7,6 +7,7 @@ import streamlit as st
 
 from model_loader import DEFAULT_MODEL_PATH, load_model
 from predict import predict_image
+from backend.ai.gradcam import GradCAM, preprocess_image, render_gradcam
 from utils import (
     DEFAULT_CONFIDENCE_THRESHOLD,
     disease_info,
@@ -92,6 +93,15 @@ if uploaded_file is not None:
                 with st.spinner("Analyzing image..."):
                     model, device = load_model(configured_model)
                     predictions = predict_image(image, model, device)
+                    heatmap_image = None
+                    overlay_image = None
+                    try:
+                        input_tensor = preprocess_image(image).to(device)
+                        with GradCAM(model, model.layer4[-1]) as gradcam:
+                            heatmap, _, _ = gradcam(input_tensor)
+                        heatmap_image, overlay_image = render_gradcam(image, heatmap)
+                    except Exception:
+                        st.warning("Grad-CAM visualization unavailable.")
                 primary = predictions[0]
                 st.session_state.prediction_history.insert(0, {
                     "time": datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M"),
@@ -120,6 +130,40 @@ if uploaded_file is not None:
                 st.markdown("### Top 3 predictions")
                 for rank, item in enumerate(predictions, 1):
                     st.progress(item["confidence"] / 100, text=f"{rank}. {display_name(item['label'])}  |  {item['confidence']:.2f}%")
+                if heatmap_image is not None and overlay_image is not None:
+                    st.markdown("## Explainability (Grad-CAM)")
+                    original_column, heatmap_column, overlay_column = st.columns(3)
+                    with original_column:
+                        st.image(image, caption="Original Image", use_container_width=True)
+                    with heatmap_column:
+                        st.image(heatmap_image, caption="Heatmap", use_container_width=True)
+                    with overlay_column:
+                        st.image(overlay_image, caption="Overlay", use_container_width=True)
+
+                    st.markdown("### Grad-CAM Explanation")
+
+                    if primary["label"] == "malignant":
+                        explanation = (
+                            "The highlighted red and yellow regions indicate the areas that most influenced "
+                            "the model's malignant prediction. Concentrated attention on an irregular lesion "
+                            "may suggest suspicious visual patterns, but this is not a medical diagnosis."
+                            )
+
+                    elif primary["label"] == "benign":
+                        explanation = (
+                            "The highlighted regions show where the model focused when predicting a benign lesion. "
+                            "The model found visual patterns that are more consistent with benign skin findings."
+                        )
+
+                    else:
+                        explanation = (
+                            "Grad-CAM highlights the facial regions that contributed most to the Non-Neoplastic prediction. "
+                            "Red and yellow areas indicate stronger influence on the model's decision, while blue regions "
+                            "had little impact. This visualization helps users understand which image features were used "
+                            "by the AI during classification."
+                        )
+
+                    st.info(explanation)
             except (FileNotFoundError, ValueError, RuntimeError) as exc:
                 st.error(str(exc))
             except Exception:
