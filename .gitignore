@@ -24,10 +24,6 @@ reports/improved_v2/
 datasets/
 skin_dataset_split/
 
-# Models
-models/
-*.pth
-*.pt
 
 # Logs
 *.log
